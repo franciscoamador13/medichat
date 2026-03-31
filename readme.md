@@ -76,7 +76,7 @@ Create a `.env` file in the root of the project:
 ```env
 GOOGLE_API_KEY=your_google_api_key
 PINECONE_API_KEY=your_pinecone_api_key
-GROQ_API_KEY=your_groq_api_key
+claude_API_KEY=your_claude_api_key
 ```
 
 ---

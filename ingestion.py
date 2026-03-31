@@ -13,6 +13,7 @@ import PyPDF2
 from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv() 
 
@@ -43,6 +44,15 @@ embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-2-preview")
 
 vector_store = PineconeVectorStore(index=index, embedding=embeddings)
 
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500, #Chunk can't surpass this limit
+    chunk_overlap=50, #The last 50 characters of the previous chunk will be repeated in the next chunk to maintain context
+    separators=["\n\n", "\n", ".", " "] #The text splitter will try to split the text using these separators in order. 
+    #If it can't split the text using the first separator, it will try the next one, and so on.
+)
+
+
 # Iterate through all pdf files in the "data" folder and add them to the vector store
 i = 0
 for file in os.listdir("data"):
@@ -59,5 +69,10 @@ for file in os.listdir("data"):
                     page_content=text,
                     metadata={"source": file, "page": page_num + 1}
                 )
-                vector_store.add_documents(documents=[doc], ids=[f"id{i}"])
+
+                # split the document into chunks and add to vector store
+                chunks = text_splitter.split_documents([doc]) #A document enters but multiple chunks can come out, depending on the length of the document and the chunk size.
+                for chunk in chunks:
+                    i += 1
+                    vector_store.add_documents(documents=[chunk], ids=[f"id{i}"])
 

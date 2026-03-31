@@ -5,6 +5,8 @@
 langchain
 langchain-google-genai
 langchain-pinecone
+langchain-text-splitters
+langchain-anthropic
  
 # Vector store
 # pinecone>=6.0.0,<8.0.0 required for langchain-pinecone 0.2.x compatibility
@@ -13,6 +15,9 @@ pinecone>=6.0.0,<8.0.0
  
 # PDF processing
 PyPDF2
+
+# Web interface
+streamlit
  
 # Environment variables
 python-dotenv
