@@ -1,18 +1,20 @@
 # MediChat RAG 🏥
 
-A Retrieval-Augmented Generation (RAG) chatbot built around a fictional Portuguese clinic. Powered by LangChain, Google Gemini Embeddings, Pinecone, and Groq (Llama 3).
+A Retrieval-Augmented Generation (RAG) chatbot built around a fictional Portuguese clinic.
+Powered by LangChain, Google Gemini Embeddings, Pinecone, and Claude (Anthropic).
 
 ---
 
 ## Tech Stack
 
-| Component        | Technology                        |
-|------------------|-----------------------------------|
-| Embeddings       | Google Gemini (`embedding-2`)     |
-| Vector Store     | Pinecone                          |
-| LLM              | Groq API (Llama 3)                |
-| RAG Framework    | LangChain                         |
-| PDF Processing   | PyPDF                             |
+| Component      | Technology                                   |
+|----------------|----------------------------------------------|
+| Embeddings     | Google Gemini (`gemini-embedding-2-preview`) |
+| Vector Store   | Pinecone                                     |
+| LLM            | Claude Haiku (`claude-haiku-4-5`)            |
+| RAG Framework  | LangChain                                    |
+| PDF Processing | PyPDF2                                       |
+| Frontend       | Streamlit                                    |
 
 ---
 
@@ -21,14 +23,13 @@ A Retrieval-Augmented Generation (RAG) chatbot built around a fictional Portugue
 - **Python 3.12.10** (strictly required — see setup notes below)
 - Pinecone account (free tier)
 - Google AI Studio API key (free tier)
-- Groq API key (free tier)
+- Anthropic API key
 
 ---
 
 ## Setup
 
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/franciscoamador13/medichat-rag.git
 cd medichat-rag
@@ -37,12 +38,8 @@ cd medichat-rag
 ### 2. Create a virtual environment
 
 > ⚠️ **Important:** This project requires **Python 3.12.10** specifically.
-> Binary installers for Python 3.12 are only available up to version 3.12.10.
-> Versions 3.12.11+ and Python 3.13+ do not provide Windows binary installers for all dependencies.
-> Python 3.14 is **not compatible** with several dependencies (e.g. NumPy, ChromaDB).
+> Python 3.14 is **not compatible** with several dependencies.
 >
-> Download Python 3.12.10 here: https://www.python.org/downloads/release/python-31210/
-
 ```bash
 # Make sure you're using Python 3.12
 py -3.12 -m venv venv_medichat
@@ -61,46 +58,53 @@ python --version  # Should print Python 3.12.10
 > or run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell first.
 
 ### 3. Install dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
 > ⚠️ **Pinecone compatibility note:** `pinecone-client` was renamed to `pinecone`. Do **not** install `pinecone-client`.
-> `langchain-pinecone 0.2.x` requires `pinecone>=6.0.0,<8.0.0` — installing `pinecone 8.x` will cause an `ImportError`.
+> `langchain-pinecone 0.2.x` requires `pinecone>=6.0.0,<8.0.0`.
 
 ### 4. Configure environment variables
 
-Create a `.env` file in the root of the project:
+Use the `.env.example` provided in the root of the project, name it to `.env` and fill it with your information
 
-```env
-GOOGLE_API_KEY=your_google_api_key
-PINECONE_API_KEY=your_pinecone_api_key
-claude_API_KEY=your_claude_api_key
+### 5. Ingest documents
+
+Place your PDF files in the `data/` folder, then run:
+```bash
+python ingest.py
+```
+
+This only needs to be run once, or whenever you add new documents.
+
+### 6. Run the app
+```bash
+streamlit run app.py
 ```
 
 ---
 
 ## Project Structure
-
 ```
 medichat-rag/
 ├── data/               # PDF documents (fictional clinic)
 ├── venv_medichat/      # Virtual environment (not committed)
 ├── .env                # API keys (not committed)
 ├── .gitignore
+├── app.py              # Streamlit app (RAG chatbot)
+├── ingest.py           # PDF ingestion & embedding pipeline
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Roadmap
+## How It Works
 
-- [ ] Phase 1 — PDF ingestion & embedding pipeline
-- [ ] Phase 2 — RAG chain with Groq (Llama 3)
-- [ ] Phase 3 — FastAPI backend
-- [ ] Phase 4 — Streamlit frontend
+1. **Ingest** (`ingest.py`) — PDFs are split into chunks, embedded with Google Gemini, and stored in Pinecone.
+2. **Retrieve** — On each user question, the top 3 most relevant chunks are fetched from Pinecone.
+3. **Generate** — The retrieved context is injected into the prompt and sent to Claude Haiku for a concise answer.
 
 ---
 

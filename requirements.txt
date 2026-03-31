@@ -1,23 +1,26 @@
 # MediChat RAG - Requirements
 # Python 3.12.10 required (see README for setup notes)
- 
-# LangChain core
+
+# Error handling
+anthropic
+
+# LangChain
 langchain
 langchain-google-genai
 langchain-pinecone
 langchain-text-splitters
 langchain-anthropic
- 
+
 # Vector store
 # pinecone>=6.0.0,<8.0.0 required for langchain-pinecone 0.2.x compatibility
-# pinecone-client was renamed to pinecone — do NOT install pinecone-client
+# Do NOT install pinecone-client (deprecated)
 pinecone>=6.0.0,<8.0.0
- 
+
 # PDF processing
 PyPDF2
 
 # Web interface
 streamlit
- 
+
 # Environment variables
 python-dotenv
