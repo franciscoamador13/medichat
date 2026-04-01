@@ -73,7 +73,7 @@ Use the `.env.example` provided in the root of the project, name it to `.env` an
 
 Place your PDF files in the `data/` folder, then run:
 ```bash
-python ingest.py
+python ingestion.py
 ```
 
 This only needs to be run once, or whenever you add new documents.
@@ -93,7 +93,7 @@ medichat-rag/
 ├── .env                # API keys (not committed)
 ├── .gitignore
 ├── app.py              # Streamlit app (RAG chatbot)
-├── ingest.py           # PDF ingestion & embedding pipeline
+├── ingestion.py        # PDF ingestion & embedding pipeline
 ├── requirements.txt
 └── README.md
 ```
@@ -102,7 +102,7 @@ medichat-rag/
 
 ## How It Works
 
-1. **Ingest** (`ingest.py`) — PDFs are split into chunks, embedded with Google Gemini, and stored in Pinecone.
+1. **Ingest** (`ingestion.py`) — PDFs are split into chunks, embedded with Google Gemini, and stored in Pinecone.
 2. **Retrieve** — On each user question, the top 3 most relevant chunks are fetched from Pinecone.
 3. **Generate** — The retrieved context is injected into the prompt and sent to Claude Haiku for a concise answer.
 
